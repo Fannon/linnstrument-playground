@@ -10,9 +10,15 @@ LinnStrument is not directly supported, but with this script it's still possible
 
 ![Synthesia Light Guide](./assets/synthesia-light-guide.png)
 
-You need to have a virtual MIDI Loop Device (e.g. loopMIDI) where Synthesia sends KeyLights to the Output.
-Use the "Finger based Channel" mode.
-Set the name of the MIDI output port in the `synthesiaLightGuide.ts` options, or name your virtual device `Loop D`.
+### How to use
+
+* Checkout / download this repository
+* Install https://nodejs.org/en if you haven't it already
+* You need to have a virtual MIDI Loop Device (e.g. loopMIDI) where Synthesia sends KeyLights to the Output.
+* Configure Synthesia to use it as a MIDI Output device and send "Key Lights" to it, using the "Finger based Channel" mode.
+* Set the name of the MIDI output port in the `synthesiaLightGuide.ts` options, or name your virtual device `Loop D`.
+    * Have a look at the options if they work for you. It assumes a LinnStrument 128 with default layout
+* Start the script:
 
 ```sh
 npx ts-node src/synthesiaLightGuide.ts
