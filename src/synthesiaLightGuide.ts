@@ -23,7 +23,7 @@ const linnStrumentOutputPort = 'LinnStrument MIDI'
     11  Pink
  */
 const highlightColor = 6
-const linnStrumentColumns = 16
+const linnStrumentColumns = 15
 const rowOffset = 5
 const startNoteNumber = 30
 const transpose = 0
@@ -62,13 +62,10 @@ function onNoteOff(msg: easyMidi.Note) {
   }
 }
 
-process.on('exit', function() {
-  console.log('Exiting. Resetting Lights.');
-  resetGrid()
-});
 process.on('SIGINT', function () {
   console.log('Exiting. Resetting Lights.');
   resetGrid()
+  process.exit()
 });
 
 function highlightNote(x: number, y: number, color: number) {

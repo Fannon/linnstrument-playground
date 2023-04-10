@@ -15,7 +15,7 @@ LinnStrument is not directly supported, but with this script it's still possible
 * Checkout / download this repository
 * Install https://nodejs.org/en if you haven't it already
 * You need to have a virtual MIDI Loop Device (e.g. loopMIDI) where Synthesia sends KeyLights to the Output.
-* Configure Synthesia to use it as a MIDI Output device and send "Key Lights" to it, using the "Finger based Channel" mode.
+* Configure Synthesia to use it as a MIDI Output device and send "Key Lights" to it, using "Channel 1" mode.
 * Set the name of the MIDI output port in the `synthesiaLightGuide.ts` options, or name your virtual device `Loop D`.
     * Have a look at the options if they work for you. It assumes a LinnStrument 128 with default layout
 * Start the script:
@@ -26,6 +26,7 @@ npx ts-node src/synthesiaLightGuide.ts
 
 ### TODO
 
+* Find out starting note and row offset automatically
 * Does not support / detect transpose on the fly. 
 
 ### Exit User Mode
