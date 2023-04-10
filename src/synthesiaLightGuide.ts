@@ -56,7 +56,6 @@ function onNoteOn(msg: easyMidi.Note) {
   console.log(logMsg)
 }
 function onNoteOff(msg: easyMidi.Note) {
-  console.log(msg)
   const noteCoords = grid[msg.note]
   for (const noteCoord of noteCoords) {
     highlightNote(noteCoord[0], noteCoord[1], 0)
