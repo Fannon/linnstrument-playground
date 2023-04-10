@@ -62,6 +62,15 @@ function onNoteOff(msg: easyMidi.Note) {
   }
 }
 
+process.on('exit', function() {
+  console.log('Exiting. Resetting Lights.');
+  resetGrid()
+});
+process.on('SIGINT', function () {
+  console.log('Exiting. Resetting Lights.');
+  resetGrid()
+});
+
 function highlightNote(x: number, y: number, color: number) {
   // console.debug(`Highlighting`, x.toString().padStart(2, '0'), y.toString().padStart(2, '0'), color)
   output.send('cc', {
