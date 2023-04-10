@@ -5,6 +5,8 @@ import * as easyMidi from 'easymidi'
 //////////////////////////////////////////
 
 const lightsInputPort = 'Loop D'
+const forwardOutputPort = 'Loop D'
+const linnStrumentInputPort = 'LinnStrument MIDI'
 const linnStrumentOutputPort = 'LinnStrument MIDI'
 /**
  *  Color Values
@@ -23,19 +25,27 @@ const linnStrumentOutputPort = 'LinnStrument MIDI'
     11  Pink
  */
 const highlightColor = 6
-const linnStrumentColumns = 16
+const linnStrumentColumns = 15
 const rowOffset = 5
 const startNoteNumber = 30
 const transpose = 0
 
 //////////////////////////////////////////
-//                                      //
+// BOOTSTRAP                            //
 //////////////////////////////////////////
 
 // console.log(easyMidi.getInputs())
 // console.log(easyMidi.getOutputs())
 
-const input = new easyMidi.Input(lightsInputPort);
+console.log(`==================================================================`)
+console.log(`LinnStrument Synthesia Light Guide`)
+console.log(`==================================================================`)
+console.log(`Light Guide MIDI Input: ${lightsInputPort}`)
+console.log(`LinnStrument MIDI Output: ${linnStrumentOutputPort}`)
+
+const lightGuideInput = new easyMidi.Input(lightsInputPort);
+const forwardOutput = new easyMidi.Output(forwardOutputPort)
+const input = new easyMidi.Input(linnStrumentInputPort)
 const output = new easyMidi.Output(linnStrumentOutputPort)
 
 resetGrid()
@@ -43,10 +53,11 @@ resetGrid()
 const grid = generateGrid(rowOffset, startNoteNumber)
 console.log(`Initialized with layout: Offset: ${rowOffset}, Start Note: ${startNoteNumber}`)
 
-input.on('noteon', onNoteOn);
-input.on('noteoff', onNoteOff);
+//////////////////////////////////////////
+// REGISTER CALLBACKS                   //
+//////////////////////////////////////////
 
-function onNoteOn(msg: easyMidi.Note) {
+lightGuideInput.on('noteon', (msg) => {
   let logMsg = `Guide Note: ${msg.note.toString().padStart(3, '0')} | Highlighted on:`
   const noteCoords = grid[msg.note]
   for (const noteCoord of noteCoords) {
@@ -54,22 +65,23 @@ function onNoteOn(msg: easyMidi.Note) {
     logMsg += ` [${noteCoord[0].toString().padStart(2, '0')}, ${noteCoord[1].toString().padStart(2, '0')}]`
   }
   console.log(logMsg)
-}
-function onNoteOff(msg: easyMidi.Note) {
+});
+lightGuideInput.on('noteoff', (msg) => {
   const noteCoords = grid[msg.note]
   for (const noteCoord of noteCoords) {
     highlightNote(noteCoord[0], noteCoord[1], 0)
   }
-}
-
-process.on('exit', function() {
-  console.log('Exiting. Resetting Lights.');
-  resetGrid()
 });
+
 process.on('SIGINT', function () {
   console.log('Exiting. Resetting Lights.');
   resetGrid()
+  process.exit()
 });
+
+//////////////////////////////////////////
+// HELPER FUNCTIONS                     //
+//////////////////////////////////////////
 
 function highlightNote(x: number, y: number, color: number) {
   // console.debug(`Highlighting`, x.toString().padStart(2, '0'), y.toString().padStart(2, '0'), color)
