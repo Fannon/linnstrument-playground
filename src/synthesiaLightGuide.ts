@@ -5,9 +5,9 @@ import * as easyMidi from 'easymidi'
 //////////////////////////////////////////
 
 const lightsInputPort = 'Loop D'
-const forwardOutputPort = 'Loop D'
 const linnStrumentInputPort = 'LinnStrument MIDI'
 const linnStrumentOutputPort = 'LinnStrument MIDI'
+const forwardOutputPorts = ['Loop A', 'Loop E']
 /**
  *  Color Values
     ============
@@ -41,12 +41,11 @@ console.log(`==================================================================`
 console.log(`LinnStrument Synthesia Light Guide`)
 console.log(`==================================================================`)
 console.log(`Light Guide MIDI Input: ${lightsInputPort}`)
-console.log(`LinnStrument MIDI Output: ${linnStrumentOutputPort}`)
-
 const lightGuideInput = new easyMidi.Input(lightsInputPort);
-const forwardOutput = new easyMidi.Output(forwardOutputPort)
-const input = new easyMidi.Input(linnStrumentInputPort)
+console.log(`LinnStrument MIDI Output: ${linnStrumentOutputPort}`)
 const output = new easyMidi.Output(linnStrumentOutputPort)
+console.log(`LinnStrument MIDI Input: ${linnStrumentInputPort}`)
+const input = new easyMidi.Input(linnStrumentInputPort)
 
 resetGrid()
 
@@ -73,11 +72,42 @@ lightGuideInput.on('noteoff', (msg) => {
   }
 });
 
+
+const forwardPorts: easyMidi.Output[] = []
+
+for (const forwardOutputPort of forwardOutputPorts) {
+  const forwardOutput = new easyMidi.Output(forwardOutputPort)
+  forwardPorts.push(forwardOutput)
+}
+
+input.on('noteon', (msg) => {
+  forwardPorts.forEach((output) => {
+    output.send("noteon", msg)
+  })
+})
+
+input.on('noteoff', (msg) => {
+  forwardPorts.forEach((output) => {
+    output.send("noteoff", msg)
+  })
+})
+input.on('cc', (msg) => {
+  console.log(`Input CC`, msg)
+  forwardPorts.forEach((output) => {
+    output.send("cc", msg)
+  })
+})
+input.on('sysex', (msg) => {
+  console.log(`Input SYSEX`, msg)
+})
+
 process.on('SIGINT', function () {
   console.log('Exiting. Resetting Lights.');
   resetGrid()
   process.exit()
 });
+
+console.log(`------------------------------------------------------------------`)
 
 //////////////////////////////////////////
 // HELPER FUNCTIONS                     //
