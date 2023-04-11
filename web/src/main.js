@@ -5,36 +5,6 @@ import { initConfig, resetConfig, saveConfig } from "./config.js";
  * Global namespace
  */
 const ext = {
-  defaultConfig: {
-    // MIDI Port Names
-    instrumentInputPort: 'LinnStrument MIDI',
-    instrumentOutputPort: 'LinnStrument MIDI',
-    lightGuideInputPort: 'Loop Back C',
-    forwardPort1: 'Loop Forward A',
-    forwardPort2: 'Loop Forward B', // Optional
-    
-    // General Options
-    /**
-     *  Color Values
-        ============
-        0   as set in Note Lights settings
-        1   Red
-        2   Yellow
-        3   Green
-        4   Cyan
-        5   Blue
-        6   Magenta
-        7   Off
-        8   White
-        9   Orange
-        10  Lime
-        11  Pink
-    */
-    highlightColor: 6,
-    linnStrumentSize: 128,
-    rowOffset: 5,
-    startNoteNumber: 30,
-  },
   config: {},
   history: {
     playedNotes: [],
@@ -54,17 +24,13 @@ WebMidi.enable().then(init).catch(console.error);
 // Function triggered when WEBMIDI.js is ready
 async function init() {
 
-  log.info(`==================================================================`)
-  log.info(`LinnStrument Synthesia Light Guide`)
-  log.info(`==================================================================`)
+  ext.config = initConfig()
 
-  initConfig(ext.config, ext.defaultConfig)
-
-  log.info(`LinnStrument MIDI Input:`.padEnd(30, ' ') + ext.config.instrumentInputPort)
+  console.debug(`LinnStrument MIDI Input:`.padEnd(30, ' ') + ext.config.instrumentInputPort)
   ext.input = WebMidi.getInputByName(ext.config.instrumentInputPort)
-  log.info(`LinnStrument MIDI Output:`.padEnd(30, ' ') + ext.config.instrumentOutputPort)
+  console.debug(`LinnStrument MIDI Output:`.padEnd(30, ' ') + ext.config.instrumentOutputPort)
   ext.output = WebMidi.getOutputByName(ext.config.instrumentOutputPort)
-  log.info(`Light Guide MIDI Input:`.padEnd(30, ' ') + ext.config.lightGuideInputPort)
+  console.debug(`Light Guide MIDI Input:`.padEnd(30, ' ') + ext.config.lightGuideInputPort)
   ext.lightGuideInput = WebMidi.getInputByName(ext.config.lightGuideInputPort)
 
   resetGrid()
@@ -73,6 +39,7 @@ async function init() {
 
   await registerCallbacks()
 
+  log.info(`Successfully initialized.`)
 }
 
 
@@ -120,13 +87,13 @@ async function registerCallbacks() {
   // Forward Instrument Input
   ext.forwardPort1 = WebMidi.getOutputByName(ext.config.forwardPort1)
   ext.input.addForwarder(ext.forwardPort1)
-  log.info(`MIDI Forward Port 1:`.padEnd(30, ' ') + ext.config.forwardPort1)
+  console.debug(`MIDI Forward Port 1:`.padEnd(30, ' ') + ext.config.forwardPort1)
 
   if (ext.config.forwardPort2) {
     try {
       ext.forwardPort2 = WebMidi.getOutputByName(ext.config.forwardPort2)
       ext.input.addForwarder(ext.forwardPort2)
-      log.info(`MIDI Forward Port 2:`.padEnd(30, ' ') + ext.config.forwardPort2)
+      console.debug(`MIDI Forward Port 2:`.padEnd(30, ' ') + ext.config.forwardPort2)
     } catch (err) {
       log.warn(`Could not open optional Forward Port 2: ${ext.config.forwardPort2}`)
     }

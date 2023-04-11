@@ -1,10 +1,25 @@
-export function initConfig(config, defaultConfig) {
-  config = defaultConfig
+export const defaultConfig = {
+  // MIDI Port Names
+  instrumentInputPort: 'LinnStrument MIDI',
+  instrumentOutputPort: 'LinnStrument MIDI',
+  lightGuideInputPort: 'Loop Back C',
+  forwardPort1: 'Loop Forward A',
+  forwardPort2: 'Loop Forward B', // Optional
+  
+  // General Options
+  highlightColor: 6,
+  linnStrumentSize: 128,
+  rowOffset: 5,
+  startNoteNumber: 30,
+}
+
+export function initConfig() {
+  let config = defaultConfig
   const userConfig = localStorage.getItem("config");
   
   if (userConfig) {
     config = {
-      ...ext.defaultConfig,
+      ...config,
       ...JSON.parse(userConfig)
     }
   }
@@ -20,7 +35,6 @@ export function initConfig(config, defaultConfig) {
 
   // instrumentInputPort
   WebMidi.inputs.forEach((device) => {
-    console.log(device)
     const option = document.createElement("option");
     option.text = device.name; 
     if (config.instrumentInputPort === device.name) {
@@ -70,6 +84,8 @@ export function initConfig(config, defaultConfig) {
   });
 
   console.debug('Config', config)
+
+  return config
 }
 
 export function saveConfig(config, event) {
@@ -87,7 +103,7 @@ export function saveConfig(config, event) {
   config.lightGuideInputPort = document.getElementById("lightGuideInputPort").value;
   config.forwardPort1 = document.getElementById("forwardPort1").value;
   config.forwardPort2 = document.getElementById("forwardPort2").value;
-  
+
   localStorage.setItem("config", JSON.stringify(config));
   location.reload()
 }
