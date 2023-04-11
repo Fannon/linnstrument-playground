@@ -1,22 +1,29 @@
-
-import { ext } from './main.js'
-
-export function initConfig() {
-  ext.config = ext.defaultConfig
+export function initConfig(config, defaultConfig) {
+  config = defaultConfig
   const userConfig = localStorage.getItem("config");
   
   if (userConfig) {
-    ext.config = {
+    config = {
       ...ext.defaultConfig,
       ...JSON.parse(userConfig)
     }
   }
 
+  //////////////////////////////////////////
+  // WRITE SETTINGS INTO FORM             //
+  //////////////////////////////////////////
+
+  document.getElementById('startNoteNumber').value = config.startNoteNumber.toString()
+  document.getElementById('rowOffset').value = config.rowOffset.toString()
+  document.getElementById('highlightColor').value = config.highlightColor.toString()
+  document.getElementById('linnStrumentSize').value = config.linnStrumentSize.toString()
+
   // instrumentInputPort
   WebMidi.inputs.forEach((device) => {
+    console.log(device)
     const option = document.createElement("option");
     option.text = device.name; 
-    if (ext.config.instrumentInputPort === device.name) {
+    if (config.instrumentInputPort === device.name) {
       option.selected = true
     } 
     document.getElementById('instrumentInputPort').add(option)
@@ -26,7 +33,7 @@ export function initConfig() {
   WebMidi.outputs.forEach((device) => {
     const option = document.createElement("option");
     option.text = device.name; 
-    if (ext.config.lightGuideInputPort === device.name) {
+    if (config.instrumentOutputPort === device.name) {
       option.selected = true
     } 
     document.getElementById('instrumentOutputPort').add(option)
@@ -35,7 +42,7 @@ export function initConfig() {
   WebMidi.inputs.forEach((device) => {
     const option = document.createElement("option");
     option.text = device.name; 
-    if (ext.config.lightGuideInputPort === device.name) {
+    if (config.lightGuideInputPort === device.name) {
       option.selected = true
     } 
     document.getElementById('lightGuideInputPort').add(option)
@@ -44,7 +51,7 @@ export function initConfig() {
   WebMidi.outputs.forEach((device) => {
     const option = document.createElement("option");
     option.text = device.name; 
-    if (ext.config.forwardPort1 === device.name) {
+    if (config.forwardPort1 === device.name) {
       option.selected = true
     } 
     document.getElementById('forwardPort1').add(option)
@@ -56,28 +63,39 @@ export function initConfig() {
   WebMidi.outputs.forEach((device) => {
     const option = document.createElement("option");
     option.text = device.name; 
-    if (ext.config.forwardPort2 === device.name) {
+    if (config.forwardPort2 === device.name) {
       option.selected = true
     } 
     document.getElementById('forwardPort2').add(option)
   });
 
-  console.debug('Config', ext.config)
+  console.debug('Config', config)
 }
 
-export function saveConfig(event) {
-  event.preventDefault() 
-  ext.config.instrumentInputPort = document.getElementById("instrumentInputPort").value;
-  ext.config.instrumentOutputPort = document.getElementById("instrumentOutputPort").value;
-  ext.config.lightGuideInputPort = document.getElementById("lightGuideInputPort").value;
-  ext.config.forwardPort1 = document.getElementById("forwardPort1").value;
-  ext.config.forwardPort2 = document.getElementById("forwardPort2").value;
-  localStorage.setItem("config", JSON.stringify(ext.config));
+export function saveConfig(config, event) {
+  if (event) {
+    event.preventDefault() 
+  }
+
+  config.startNoteNumber = parseInt(document.getElementById("startNoteNumber").value);
+  config.rowOffset = parseInt(document.getElementById("rowOffset").value);
+  config.highlightColor = parseInt(document.getElementById("highlightColor").value);
+  config.linnStrumentSize = parseInt(document.getElementById("linnStrumentSize").value);
+
+  config.instrumentInputPort = document.getElementById("instrumentInputPort").value;
+  config.instrumentOutputPort = document.getElementById("instrumentOutputPort").value;
+  config.lightGuideInputPort = document.getElementById("lightGuideInputPort").value;
+  config.forwardPort1 = document.getElementById("forwardPort1").value;
+  config.forwardPort2 = document.getElementById("forwardPort2").value;
+  
+  localStorage.setItem("config", JSON.stringify(config));
   location.reload()
 }
 
 export function resetConfig(event) {
-  event.preventDefault() 
+  if (event) {
+    event.preventDefault() 
+  }
   localStorage.removeItem("config")
   location.reload()
 }

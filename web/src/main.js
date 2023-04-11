@@ -4,14 +4,14 @@ import { initConfig, resetConfig, saveConfig } from "./config.js";
 /**
  * Global namespace
  */
-export const ext = {
+const ext = {
   defaultConfig: {
     // MIDI Port Names
     instrumentInputPort: 'LinnStrument MIDI',
     instrumentOutputPort: 'LinnStrument MIDI',
-    lightGuideInputPort: 'Loop D',
-    forwardPort1: 'Loop A',
-    forwardPort2: 'Loop E', // Optional
+    lightGuideInputPort: 'Loop Back C',
+    forwardPort1: 'Loop Forward A',
+    forwardPort2: 'Loop Forward B', // Optional
     
     // General Options
     /**
@@ -43,6 +43,8 @@ export const ext = {
   stats: {},
 }
 
+window.ext = ext
+
 //////////////////////////////////////////
 // OPTIONS                              //
 //////////////////////////////////////////
@@ -56,7 +58,7 @@ async function init() {
   log.info(`LinnStrument Synthesia Light Guide`)
   log.info(`==================================================================`)
 
-  initConfig()
+  initConfig(ext.config, ext.defaultConfig)
 
   log.info(`LinnStrument MIDI Input:`.padEnd(30, ' ') + ext.config.instrumentInputPort)
   ext.input = WebMidi.getInputByName(ext.config.instrumentInputPort)
@@ -76,9 +78,13 @@ async function init() {
 
 async function registerCallbacks() {
 
-  // UI Elements
-  document.getElementById("save").addEventListener("click", saveConfig);
-  document.getElementById("reset").addEventListener("click", resetConfig);
+  // UI Buttons Listeners
+  document.getElementById("save").addEventListener("click", (event) => {
+    saveConfig(ext.config, event)
+  });
+  document.getElementById("reset").addEventListener("click", (event) => {
+    resetConfig(event)
+  });
 
   // Light Guide Input
   try {
@@ -105,7 +111,9 @@ async function registerCallbacks() {
       }
     });
   } catch (err) {
-    log.error(`Could not connect to Light Guide Input Port: ${ext.config.lightGuideInput}`)
+    log.error(`Could not connect to Light Guide Input Port: ${ext.config.lightGuideInputPort}`)
+    log.error(err.toString())
+    console.error(err)
   }
 
 
@@ -127,8 +135,6 @@ async function registerCallbacks() {
   document.getElementById('loading-status').innerHTML = `<span class="badge bg-success">Initialized.</span>`;
 
 }
-
-
 
 //////////////////////////////////////////
 // HELPER FUNCTIONS                     //
