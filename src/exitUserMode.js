@@ -26,3 +26,21 @@ const sleep = (ms) => {
     setTimeout(resolve, ms);
   });
 };
+
+function convertNRPNtoCC(nrpnMsg) {
+  // Extract the NRPN parameter number and value from the message
+  const nrpnParam = nrpnMsg[1] << 7 | nrpnMsg[2];
+  const nrpnValue = nrpnMsg[4] << 7 | nrpnMsg[5];
+
+  // Convert the NRPN parameter number to a CC number (add 32)
+  const ccNumber = nrpnParam + 32;
+
+  // Calculate the MSB and LSB values for the CC message from the NRPN value
+  const ccValueMSB = nrpnValue >> 7;
+  const ccValueLSB = nrpnValue & 0x7F;
+
+  // Return an array of two CC messages (MSB and LSB)
+  return [    [0xB0, ccNumber, ccValueMSB],
+    [0xB0, ccNumber + 32, ccValueLSB]
+  ];
+}

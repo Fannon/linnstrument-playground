@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LinnStrument Light Guide</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/webmidi@latest/dist/iife/webmidi.iife.js"></script>
+</head>
+
+<body>
+  <div class="container py-3">
+    <header>
+      <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+          <title><strong>LinnStrument Light Guide</strong></title>
+          <span class="fs-4">LinnStrument Light Guide&nbsp;</span>
+          
+          <span id="loading-status" class=""><span class="badge bg-secondary">Loading...</span></span>
+        </a>
+
+        <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+          <a class="me-3 py-2 text-dark text-decoration-none" target="_blank"
+            href="https://github.com/Fannon/linnstrument-playground">GitHub & Documentation</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="row text-left">
+        <div class="col">
+          <h3>Documentation</h3>
+          <div>Please read the GitHub documentation.</div>
+          <br>
+        </div>
+      </div>
+      <div class="row text-left">
+        <div class="col-5">
+          <h3>Configuration</h3>
+          <form>
+            <div class="mb-3">
+              <label for="instrumentInputPort" class="form-label"><strong>Input Port</strong>: LinnStrument</label>
+              <select id="instrumentInputPort" class="form-select" ></select>
+
+              <label for="instrumentOutputPort" class="form-label"><strong>Output Port</strong>: LinnStrument</label>
+              <select id="instrumentOutputPort" class="form-select" ></select>
+
+              <label for="lightGuideInputPort" class="form-label"><strong>Input Port</strong>: Light Guide</label>
+              <select id="lightGuideInputPort" class="form-select" ></select>
+              <div class="form-text">MIDI port where Synthesia sends Light MIDI data</div>
+
+              <label for="forwardPort1" class="form-label"><strong>Output Port</strong>:Forward MIDI 1</label>
+              <select id="forwardPort1" class="form-select" ></select>
+              <div class="form-text">Forwards LinnStrument MIDI to this port.</div>
+
+              <label for="forwardPort2" class="form-label"><strong>Output Port</strong>:Forward MIDI 2 (optional)</label>
+              <select id="forwardPort2" class="form-select" ></select>
+              <div class="form-text">Forwards LinnStrument MIDI to this port.</div>
+
+            </div>
+            <button type="button" id="save" class="btn btn-success">Save</button>
+            <button type="button" id="reset" class="btn btn-danger">Reset</button>
+          </form>
+        </div>
+        <div class="col-7">
+          <h3>Logs</h3>
+          <div id="log"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="pt-4 my-md-5 pt-md-5 border-top">
+
+    </footer>
+  </div>
+  <script src="./src/main.js" type="module"></script>
+  <style>
+    .log-entry {
+      background: #FEFEFE;
+    }
+    .log-warn {
+      color: orange;
+    }
+    .log-error {
+      color: red;
+    }
+  </style>
+</body>
+
+</html>
